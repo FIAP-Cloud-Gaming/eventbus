@@ -1,0 +1,41 @@
+name: CD
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  DOTNET_VERSION: '10.0.x'
+  CONFIGURATION: Release
+
+jobs:
+  pack:
+    name: Pack & Publish NuGet
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Pack
+      run: dotnet pack --configuration ${{ env.CONFIGURATION }} --no-restore --output ./artifacts
+
+    - name: Publish to GitHub Packages
+      run: |
+        dotnet nuget push ./artifacts/*.nupkg \
+          --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json \
+          --api-key ${{ secrets.GITHUB_TOKEN }} \
+          --skip-duplicate

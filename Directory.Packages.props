@@ -1,0 +1,13 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="10.0.3" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.3" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="10.0.3" />
+    <PackageVersion Include="OpenTelemetry.Api" Version="1.15.0" />
+    <PackageVersion Include="Polly" Version="8.6.5" />
+    <PackageVersion Include="RabbitMQ.Client" Version="7.2.0" />
+  </ItemGroup>
+</Project>
