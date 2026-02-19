@@ -23,7 +23,6 @@ public sealed class RabbitMQEventBus(
     {
         var routingKey = @event.GetType().Name;
 
-        // OpenTelemetry: cria span de publish
         using var activity = s_activitySource.StartActivity($"{routingKey} publish", ActivityKind.Client);
 
         var properties = new BasicProperties
@@ -31,7 +30,6 @@ public sealed class RabbitMQEventBus(
             DeliveryMode = DeliveryModes.Persistent
         };
 
-        // Propaga trace context nos headers da mensagem
         if (activity is not null)
         {
             s_propagator.Inject(new PropagationContext(activity.Context, Baggage.Current),
@@ -42,7 +40,6 @@ public sealed class RabbitMQEventBus(
                 });
         }
 
-        // Retry com Polly (exponential backoff)
         var policy = Policy.Handle<Exception>()
             .WaitAndRetryAsync(_retryCount,
                 retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
@@ -74,7 +71,6 @@ public sealed class RabbitMQEventBus(
 
         _consumerChannel = await connection.CreateChannelAsync(cancellationToken: cancellationToken);
 
-        // Declarar exchange + fila + bindings para cada evento registrado
         await _consumerChannel.ExchangeDeclareAsync(ExchangeName, "direct", cancellationToken: cancellationToken);
         await _consumerChannel.QueueDeclareAsync(_queueName, durable: true, exclusive: false,
             autoDelete: false, cancellationToken: cancellationToken);
@@ -110,7 +106,6 @@ public sealed class RabbitMQEventBus(
     {
         var eventName = ea.RoutingKey;
 
-        // OpenTelemetry: extrai trace context dos headers
         var parentContext = s_propagator.Extract(default, ea.BasicProperties,
             (props, key) =>
             {
@@ -124,13 +119,13 @@ public sealed class RabbitMQEventBus(
 
         try
         {
-            // Resolve handlers via keyed services
             await using var scope = serviceProvider.CreateAsyncScope();
             var handlers = scope.ServiceProvider.GetKeyedServices<IIntegrationEventHandler>(eventName);
 
             if (!_subscriptionInfo.EventTypes.TryGetValue(eventName, out var eventType))
             {
                 logger.LogWarning("No subscription for event '{EventName}'", eventName);
+                await _consumerChannel!.BasicNackAsync(ea.DeliveryTag, false, false);
                 return;
             }
 

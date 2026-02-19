@@ -1,14 +1,37 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <PackageId>FiapCloudGaming.EventBus</PackageId>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Options" />
-  </ItemGroup>
+		<!-- Package Information -->
+		<PackageId>FiapCloudGaming.EventBus</PackageId>
+		<Version>1.0.0</Version>
+		<Authors>FIAP Cloud Gaming Team</Authors>
+		<Company>FIAP Cloud Gaming</Company>
+		<Product>FIAP Cloud Gaming EventBus</Product>
+		<Description>Event bus abstractions for asynchronous communication between microservices using integration events.</Description>
+		<PackageTags>eventbus;integration-events;messaging;microservices;fiap</PackageTags>
+		<PackageProjectUrl>https://github.com/FIAP-Cloud-Gaming/EventBus</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/FIAP-Cloud-Gaming/EventBus</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+		<!-- Build Configuration -->
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+
+		<!-- Documentation -->
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Options" />
+	</ItemGroup>
 
 </Project>

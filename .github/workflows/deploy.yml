@@ -1,4 +1,4 @@
-name: CD
+name: deploy
 
 on:
   push:
@@ -49,10 +49,10 @@ jobs:
           --configfile nuget.config
 
     - name: restore dependencies
-      run: dotnet restore ${{ ENV.SOLUTION_NAME }}
+      run: dotnet restore ${{ env.SOLUTION_NAME }}
 
     - name: pack
-      run: dotnet pack ${{ ENV.SOLUTION_NAME }} --configuration ${{ env.CONFIGURATION }} --no-restore --output ./artifacts
+      run: dotnet pack ${{ env.SOLUTION_NAME }} --configuration ${{ env.CONFIGURATION }} --no-restore --output ./artifacts
 
     - name: upload artifacts
       uses: actions/upload-artifact@v6
